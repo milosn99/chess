@@ -12,16 +12,16 @@ class Login extends Component {
         redirect: null
     }
 
-    onMatchCreated(data){
-        console.log(data);
-        //alert(`Mec kreiran na id=${link}. Cekam protivnika`);
-    }
-
     onFriendlySubmit = event => {
         event.preventDefault();
-        this.state.socket.emit('join_match', {"username": this.state.username, "match_type": 'friendly', "id": this.state.id});
         if(!this.state.id){
-            this.state.socket.on('match_created', this.onMatchCreated(event));
+            this.state.socket.emit('join_match', {"username": this.state.username, "match_type": 'friendly'});
+            this.state.socket.on('match_created', data => {
+                alert(`Mec kreiran na ${data.value.id}. Cekam protivnika`);
+            });
+        }
+        else{
+            this.state.socket.emit('join_match', {"username": this.state.username, "match_type": 'friendly', "id": this.state.id});
         }
         this.state.socket.on('match_started', ()=>{
             this.setState({redirect: "/game"});
