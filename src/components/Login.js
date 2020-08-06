@@ -1,32 +1,48 @@
-import React, { Component } from "react";
 import io from 'socket.io-client';
+import React, { Component } from "react";
+import { Redirect } from "react-router-dom";
+
+
 
 class Login extends Component {
     state = {
         username: '',
-        id: new URLSearchParams(window.location.search).get('id')
+        id: new URLSearchParams(window.location.search).get('id'),
+        socket: io("https://react-flask-chess.herokuapp.com/"),
+        redirect: null
+    }
+
+    onMatchCreated(data){
+        console.log(data);
+        //alert(`Mec kreiran na id=${link}. Cekam protivnika`);
     }
 
     onFriendlySubmit = event => {
         event.preventDefault();
-        const user = this.state.username;
-        const tId = this.state.id;
-        var socket = io("https://react-flask-chess.herokuapp.com/");
-        socket.on('connect', function() {
-            socket.emit('join_match', {"username": user, "match_type": 'friendly', "id": tId});
+        this.state.socket.emit('join_match', {"username": this.state.username, "match_type": 'friendly', "id": this.state.id});
+        if(!this.state.id){
+            this.state.socket.on('match_created', this.onMatchCreated(event));
+        }
+        this.state.socket.on('match_started', ()=>{
+            this.setState({redirect: "/game"});
         });
     }
 
     onRandomSubmit = event => {
-
         event.preventDefault();
-        var socket = io("https://react-flask-chess.herokuapp.com/");
-        socket.on('connect', function() {
-            socket.emit('join_match', {"username": this.state.username, "match_type": 'random'});
+        this.state.socket.emit('join_match', {"username": this.state.username, "match_type": 'random'});
+
+        this.state.socket.on('match_created', alert("asd"));
+        this.state.socket.on('match_started', ()=>{
+            this.setState({redirect: "/game"});
         });
     }
 
     render() {
+        if (this.state.redirect) {
+            return <Redirect to={this.state.redirect} />
+          }
+        
         return (
             <form>
                 <h3>Chess Game</h3>
@@ -53,7 +69,11 @@ class Login extends Component {
                     className="btn btn-primary btn-block">
                         Friendly
                     </button>
-                <button type="submit" className="btn btn-primary btn-block">Random</button>
+
+                <button 
+                    onClick={this.onRandomSubmit}
+                    type="submit" 
+                    className="btn btn-primary btn-block">Random</button>
             </form>
         );
     }

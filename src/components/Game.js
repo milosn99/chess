@@ -1,11 +1,10 @@
 import React, { Component } from "react";
-import io from 'socket.io-client';
-import Chessboard from 'chessboardjsx';
+import Logic from './Logic';
 
 class Game extends Component {
     
     render(){
-        return <div><Chessboard position="start" draggable={false}/></div>
+        return <div><Logic/></div>
     }
 }
 
