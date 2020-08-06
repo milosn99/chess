@@ -8,34 +8,35 @@ class Login extends Component {
     state = {
         username: '',
         id: new URLSearchParams(window.location.search).get('id'),
-        socket: io("https://react-flask-chess.herokuapp.com/"),
+        socket: io("http://127.0.0.1:5000/"),
         redirect: null
+    }
+
+    componentDidMount() {
+        this.state.socket.on('match_created', data => {
+            console.log(data);
+            alert(`Mec kreiran na ${data.id}. Cekam protivnika`);
+        });
+
+        this.state.socket.on('match_started', ()=>{
+            this.setState({redirect: "/game"});
+        });
     }
 
     onFriendlySubmit = event => {
         event.preventDefault();
         if(!this.state.id){
             this.state.socket.emit('join_match', {"username": this.state.username, "match_type": 'friendly'});
-            this.state.socket.on('match_created', data => {
-                alert(`Mec kreiran na ${data.value.id}. Cekam protivnika`);
-            });
         }
         else{
             this.state.socket.emit('join_match', {"username": this.state.username, "match_type": 'friendly', "id": this.state.id});
         }
-        this.state.socket.on('match_started', ()=>{
-            this.setState({redirect: "/game"});
-        });
+        
     }
 
     onRandomSubmit = event => {
         event.preventDefault();
         this.state.socket.emit('join_match', {"username": this.state.username, "match_type": 'random'});
-
-        this.state.socket.on('match_created', alert("asd"));
-        this.state.socket.on('match_started', ()=>{
-            this.setState({redirect: "/game"});
-        });
     }
 
     render() {
