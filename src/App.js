@@ -53,6 +53,7 @@ class App extends React.Component{
 
 
     onRandomSubmit = event => {
+      event.preventDefault();
       this.state.socket.emit('join_match', {"username": this.state.username, "match_type": 'random'});
     }
 
