@@ -26,16 +26,13 @@ class App extends React.Component{
       });
 
       this.state.socket.on('match_started', (data)=>{
-          if(this.state.id!==data.id){
-              return;
-          }
           if(this.state.username===data.white_player){
                   this.setState({color:'w'});
               }
           else if(this.state.username===data.black_player){
                   this.setState({color:'b'});
               }
-          this.setState({match_started: true});
+          this.setState({match_started: true, id:data.id});
       });
     }
 
@@ -56,8 +53,6 @@ class App extends React.Component{
 
 
     onRandomSubmit = event => {
-      event.preventDefault();
-      alert(`${this.state.username}`);
       this.state.socket.emit('join_match', {"username": this.state.username, "match_type": 'random'});
     }
 
