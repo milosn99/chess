@@ -26,6 +26,9 @@ class App extends React.Component{
       });
 
       this.state.socket.on('match_started', (data)=>{
+          if(this.state.username!==data.white_player &&
+            this.state.username!==data.black_player) 
+            return;
           if(this.state.username===data.white_player){
                   this.setState({color:'w'});
               }
