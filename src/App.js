@@ -1,26 +1,32 @@
 import React from 'react';
 import './bootstrap.min.css';
 import './App.css';
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 import Login from "./components/Login";
-import Game from "./components/Game";
+import Logic from "./components/Logic";
 
-function App() {
-  return (<Router>
-    <div className="App">
+class App extends React.Component{
 
-      <div className="auth-wrapper">
-        <div className="auth-inner">
-          <Switch>
-            <Route exact path='/' component={Login} />
-            <Route path="/sign-in" component={Login} />
-            <Route path="/game" component={Game} />
-          </Switch>
+  render() {
+     return (<Router>
+
+      <div className="App">
+
+          <div className="auth-wrapper">
+            <div className="auth-inner">
+              <Switch>
+                <Route exact path='/' component={Login} />
+                <Route path="/game" component={(props) => <Logic {...props}/>} />
+              </Switch>
+            </div>
+          </div>
+
         </div>
-      </div>
-    </div></Router>
-  );
+
+      </Router>
+    );
+  }
 }
 
 export default App;
