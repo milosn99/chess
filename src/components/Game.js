@@ -11,8 +11,9 @@ class HumanVsHuman extends Component {
     dropSquareStyle: {}, //izgled polja na koje je pomjereno
     squareStyles: {}, //posebna polja
     pieceSquare: "", //polje na kojem se nalazi figura koja je kliknuta
-    square: "", //posljenje kliknuto poljes
-    history: [] //prethodno odigrani potezi
+    square: "", //posljenje kliknuto polje
+    history: [], //prethodno odigrani potezi
+    color: this.props.color
   };
 
   componentDidMount() {
@@ -52,15 +53,25 @@ class HumanVsHuman extends Component {
     }));
   };
 
+  canMove = () => {
+    if  (this.game.game_over() === true ||
+    (this.game.turn() !== this.state.color)) {
+         return false;
+    } 
+    return true;
+  }
+
   onDrop = ({ sourceSquare, targetSquare }) => {
     // provjera da li je potez dozvoljen
+    if(!this.canMove()) return;
+
     let move = this.game.move({
       from: sourceSquare,
       to: targetSquare,
       promotion: "q"
-    });
+    })
 
-    // illegal move
+    // nedozvoljen potez
     if (move === null) return;
     this.setState(({ history, pieceSquare }) => ({
       fen: this.game.fen(),
@@ -100,6 +111,7 @@ class HumanVsHuman extends Component {
   };
 
   onSquareClick = square => {
+    //if(!this.canMove()) return;
 
     this.setState(({ history }) => ({
       squareStyles: squareStyling({ pieceSquare: square, history }),
@@ -145,11 +157,13 @@ class HumanVsHuman extends Component {
   }
 }
 
-export default function Logic() {
+export default function Game(color, id, username, socket) {
   return (
     <div>
       <HumanVsHuman>
         {({
+          color,
+          socket,
           position,
           onDrop,
           onMouseOverSquare,

@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import io from 'socket.io-client';
 
 import Login from "./components/Login";
+import Game from './components/Game';
 
 class App extends React.Component{
       state = {
@@ -12,8 +13,7 @@ class App extends React.Component{
         socket:io("https://react-flask-chess.herokuapp.com/"),
         id: new URLSearchParams(window.location.search).get('id'),
         redirect: null,
-        color: '',
-        opponent: '',
+        color: 'w',
         match_started: false,
         match_created: false
       }
@@ -31,10 +31,10 @@ class App extends React.Component{
               return;
           }
           if(this.state.username===data.white_player){
-                  this.setState({color:'white'});
+                  this.setState({color:'w'});
               }
           else if(this.state.username===data.black_player){
-                  this.setState({color:'black'});
+                  this.setState({color:'b'});
               }
           this.setState({match_started: true});
       });
@@ -63,11 +63,11 @@ class App extends React.Component{
     }
 
     onUsernameChange = username => {
-      this.setState({ username });
+      this.setState({ username:username });
     };
 
     isLoggedIn = this.state.username && (this.state.match_started || this.state.match_created);
-
+    isLoggedIn = true;
     render() {
         return (
 
@@ -80,7 +80,11 @@ class App extends React.Component{
                                           onFriendlySubmit={this.onFriendlySubmit}
                                           onRandomSubmit={this.onRandomSubmit}/>
                     }
-                  
+                  {this.isLoggedIn && <Game
+                                        color={this.state.color}
+                                        id={this.state.id}
+                                        username={this.state.username}
+                                        socket={this.state.socket}/>}
                 </div>
               </div>
 
