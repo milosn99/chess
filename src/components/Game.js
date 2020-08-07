@@ -21,7 +21,7 @@ class HumanVsHuman extends Component {
   componentDidMount() {
     this.game = new Chess();
 
-    this.state.socket.on('move', data=>{
+    this.state.socket.on('opponent_move', data=>{
 
       if(this.state.id!==data.id) return;
 
@@ -102,7 +102,7 @@ class HumanVsHuman extends Component {
     }));
 
     const tId=this.state.id;
-    this.state.socket.emit('move', {'id':{tId}, 'from':{sourceSquare}, "to":{targetSquare}, 'replace':'none'});
+    this.state.socket.emit('move', {'id': tId, 'from': sourceSquare, "to": targetSquare, 'replace': null});
   };
 
   onMouseOverSquare = square => {
@@ -160,7 +160,7 @@ class HumanVsHuman extends Component {
     });
     
     const tId = this.state.id;
-    this.state.socket.emit('move', {'id':{tId},'from':{from}, "to":{square}, 'replace':'none'});
+    this.state.socket.emit('move', {'id': tId,'from': from, "to": square, 'replace': null});
   };
 
   onSquareRightClick = square =>

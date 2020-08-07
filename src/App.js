@@ -9,7 +9,7 @@ import Game from './components/Game';
 class App extends React.Component{
       state = {
         username: '',
-        socket:io("https://react-flask-chess.herokuapp.com/"),
+        socket:io("http://127.0.0.1:5000/"),
         id: new URLSearchParams(window.location.search).get('id'),
         redirect: null,
         color: '',
@@ -64,21 +64,23 @@ class App extends React.Component{
       this.setState({ username:username });
     };
 
-    isLoggedIn = this.state.username && (this.state.match_started || this.state.match_created);
 
     render() {
+      const isLoggedIn = this.state.username && (this.state.match_started || this.state.match_created);
+
+
         return (
 
           <div className="App">
 
               <div className="auth-wrapper">
                 <div className="auth-inner">
-                  {!this.isLoggedIn && <Login 
+                  {!isLoggedIn && <Login 
                                           onUsernameChange={this.onUsernameChange}
                                           onFriendlySubmit={this.onFriendlySubmit}
                                           onRandomSubmit={this.onRandomSubmit}/>
                     }
-                  {this.isLoggedIn && <Game
+                  {isLoggedIn && <Game
                                         color={this.state.color}
                                         id={this.state.id}
                                         username={this.state.username}
