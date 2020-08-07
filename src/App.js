@@ -12,7 +12,7 @@ class App extends React.Component{
         socket:io("https://react-flask-chess.herokuapp.com/"),
         id: new URLSearchParams(window.location.search).get('id'),
         redirect: null,
-        color: 'w',
+        color: '',
         match_started: false,
         match_created: false
       }
@@ -21,7 +21,7 @@ class App extends React.Component{
       this.state.socket.on('match_created', data => {
           if(this.state.id===data.id){
               alert(`Mec kreiran na ${data.id}. Cekam protivnika`);
-              //this.setState({id:data.id});
+              this.setState({id:data.id});
           }
       });
 
@@ -51,7 +51,7 @@ class App extends React.Component{
       else{
           this.state.socket.emit('join_match', {"username": this.state.username, "match_type": 'friendly', "id": this.state.id});
       }
-      this.setState({overlay:true});
+      //this.setState({overlay:true});
     }
 
 
@@ -66,7 +66,7 @@ class App extends React.Component{
     };
 
     isLoggedIn = this.state.username && (this.state.match_started || this.state.match_created);
-    isLoggedIn = true;
+
     render() {
         return (
 
@@ -80,7 +80,7 @@ class App extends React.Component{
                                           onRandomSubmit={this.onRandomSubmit}/>
                     }
                   {this.isLoggedIn && <Game
-                                        color='w'
+                                        color={this.state.color}
                                         id={this.state.id}
                                         username={this.state.username}
                                         socket={this.state.socket}/>}

@@ -14,13 +14,16 @@ class HumanVsHuman extends Component {
     square: "", //posljenje kliknuto polje
     history: [], //prethodno odigrani potezi
     color: this.props.color,
-    state: this.props.state
+    socket: this.props.socket,
+    id: this.props.id
   };
 
   componentDidMount() {
     this.game = new Chess();
 
     this.state.socket.on('move', data=>{
+
+      if(this.state.id!==data.id) return;
 
       let move = this.game.move({
         from: data.from,
@@ -98,7 +101,8 @@ class HumanVsHuman extends Component {
       squareStyles: squareStyling({ pieceSquare, history })
     }));
 
-    this.props.socket.emit('move', {'from':{sourceSquare}, "to":{targetSquare}, 'replace':'none'});
+    const tId=this.state.id;
+    this.state.socket.emit('move', {'id':{tId}, 'from':{sourceSquare}, "to":{targetSquare}, 'replace':'none'});
   };
 
   onMouseOverSquare = square => {
@@ -132,7 +136,7 @@ class HumanVsHuman extends Component {
   };
 
   onSquareClick = square => {
-    //if(!this.canMove()) return;
+    if(!this.canMove()) return;
 
     this.setState(({ history }) => ({
       squareStyles: squareStyling({ pieceSquare: square, history }),
@@ -155,7 +159,8 @@ class HumanVsHuman extends Component {
       pieceSquare: ""
     });
     
-    this.state.socket.emit('move', {'from':{from}, "to":{square}, 'replace':'none'});
+    const tId = this.state.id;
+    this.state.socket.emit('move', {'id':{tId},'from':{from}, "to":{square}, 'replace':'none'});
   };
 
   onSquareRightClick = square =>
@@ -182,10 +187,9 @@ class HumanVsHuman extends Component {
 }
 
 export default function Game(props) {
-  console.log(props.color);
   return (
     <div>
-      <HumanVsHuman color={props.color} socket={props.socket}>
+      <HumanVsHuman color={props.color} socket={props.socket} id={props.id}>
         {({
           position,
           onDrop,
