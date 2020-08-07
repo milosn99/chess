@@ -1,7 +1,6 @@
 import React from 'react';
 import './bootstrap.min.css';
 import './App.css';
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import io from 'socket.io-client';
 
 import Login from "./components/Login";
@@ -81,7 +80,7 @@ class App extends React.Component{
                                           onRandomSubmit={this.onRandomSubmit}/>
                     }
                   {this.isLoggedIn && <Game
-                                        color={this.state.color}
+                                        color='w'
                                         id={this.state.id}
                                         username={this.state.username}
                                         socket={this.state.socket}/>}

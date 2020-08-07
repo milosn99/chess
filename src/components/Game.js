@@ -78,6 +78,8 @@ class HumanVsHuman extends Component {
       history: this.game.history({ verbose: true }),
       squareStyles: squareStyling({ pieceSquare, history })
     }));
+
+    this.props.socket.emit('move', {'from':{sourceSquare}, "to":{targetSquare}, 'replace':'none'});
   };
 
   onMouseOverSquare = square => {
@@ -123,7 +125,8 @@ class HumanVsHuman extends Component {
       to: square,
       promotion: "q"
     });
-
+    
+    const from = this.state.pieceSquare;
     // nedozvoljen potez
     if (move === null) return;
 
@@ -132,6 +135,8 @@ class HumanVsHuman extends Component {
       history: this.game.history({ verbose: true }),
       pieceSquare: ""
     });
+    
+    this.state.socket.emit('move', {'from':{from}, "to":{square}, 'replace':'none'});
   };
 
   onSquareRightClick = square =>
@@ -157,13 +162,12 @@ class HumanVsHuman extends Component {
   }
 }
 
-export default function Game(color, id, username, socket) {
+export default function Game(props) {
+  console.log(props.color);
   return (
     <div>
-      <HumanVsHuman>
+      <HumanVsHuman color={props.color} socket={props.socket}>
         {({
-          color,
-          socket,
           position,
           onDrop,
           onMouseOverSquare,
