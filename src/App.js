@@ -2,31 +2,91 @@ import React from 'react';
 import './bootstrap.min.css';
 import './App.css';
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import io from 'socket.io-client';
 
 import Login from "./components/Login";
-import Logic from "./components/Logic";
 
 class App extends React.Component{
+      state = {
+        username: '',
+        socket:io("https://react-flask-chess.herokuapp.com/"),
+        id: new URLSearchParams(window.location.search).get('id'),
+        redirect: null,
+        color: '',
+        opponent: '',
+        match_started: false,
+        match_created: false
+      }
 
-  render() {
-     return (<Router>
+    componentDidMount() {
+      this.state.socket.on('match_created', data => {
+          if(this.state.id===data.id){
+              alert(`Mec kreiran na ${data.id}. Cekam protivnika`);
+              //this.setState({id:data.id});
+          }
+      });
 
-      <div className="App">
+      this.state.socket.on('match_started', (data)=>{
+          if(this.state.id!==data.id){
+              return;
+          }
+          if(this.state.username===data.white_player){
+                  this.setState({color:'white'});
+              }
+          else if(this.state.username===data.black_player){
+                  this.setState({color:'black'});
+              }
+          this.setState({match_started: true});
+      });
+    }
 
-          <div className="auth-wrapper">
-            <div className="auth-inner">
-              <Switch>
-                <Route exact path='/' component={Login} />
-                <Route path="/game" component={(props) => <Logic {...props}/>} />
-              </Switch>
+    onFriendlySubmit = event => {
+      event.preventDefault();
+      if(!this.state.username){
+          alert("Unesi username");
+          return;
+      }
+      if(!this.state.id){
+          this.state.socket.emit('join_match', {"username": this.state.username, "match_type": 'friendly'});
+      }
+      else{
+          this.state.socket.emit('join_match', {"username": this.state.username, "match_type": 'friendly', "id": this.state.id});
+      }
+      this.setState({overlay:true});
+    }
+
+
+    onRandomSubmit = event => {
+      event.preventDefault();
+      alert(`${this.state.username}`);
+      this.state.socket.emit('join_match', {"username": this.state.username, "match_type": 'random'});
+    }
+
+    onUsernameChange = username => {
+      this.setState({ username });
+    };
+
+    isLoggedIn = this.state.username && (this.state.match_started || this.state.match_created);
+
+    render() {
+        return (
+
+          <div className="App">
+
+              <div className="auth-wrapper">
+                <div className="auth-inner">
+                  {!this.isLoggedIn && <Login 
+                                          onUsernameChange={this.onUsernameChange}
+                                          onFriendlySubmit={this.onFriendlySubmit}
+                                          onRandomSubmit={this.onRandomSubmit}/>
+                    }
+                  
+                </div>
+              </div>
+
             </div>
-          </div>
-
-        </div>
-
-      </Router>
-    );
-  }
+        );
+      }
 }
 
 export default App;
