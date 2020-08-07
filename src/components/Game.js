@@ -13,11 +13,30 @@ class HumanVsHuman extends Component {
     pieceSquare: "", //polje na kojem se nalazi figura koja je kliknuta
     square: "", //posljenje kliknuto polje
     history: [], //prethodno odigrani potezi
-    color: this.props.color
+    color: this.props.color,
+    state: this.props.state
   };
 
   componentDidMount() {
     this.game = new Chess();
+
+    this.state.socket.on('move', data=>{
+
+      let move = this.game.move({
+        from: data.from,
+        to: data.to,
+        promotion: "q"
+      })
+  
+      // nedozvoljen potez
+      if (move === null) return;
+
+      this.setState(({ history, pieceSquare }) => ({
+        fen: this.game.fen(),
+        history: this.game.history({ verbose: true }),
+        squareStyles: squareStyling({ pieceSquare, history })
+      }));
+    })
   }
 
   //brisanje hajlajtovanja
@@ -125,7 +144,7 @@ class HumanVsHuman extends Component {
       to: square,
       promotion: "q"
     });
-    
+
     const from = this.state.pieceSquare;
     // nedozvoljen potez
     if (move === null) return;
