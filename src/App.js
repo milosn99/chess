@@ -65,7 +65,6 @@ class App extends React.Component{
 
     render() {
       var isLoggedIn = this.state.username && (this.state.match_started || this.state.match_created);
-      isLoggedIn=true;
 
         return (
 
