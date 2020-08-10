@@ -15,7 +15,9 @@ class HumanVsHuman extends Component {
     history: [], //prethodno odigrani potezi
     color: this.props.color, //boja igraca
     socket: this.props.socket, //socket na kom se igra
-    id: this.props.id //id meca
+    id: this.props.id, //id meca
+    winner: false, //da li je pobijedio ili nije
+    username: this.props.username //username igraca
   };
 
   componentDidMount() {
@@ -37,8 +39,44 @@ class HumanVsHuman extends Component {
       this.setState(({ history, pieceSquare }) => ({
         fen: this.game.fen(),
         history: this.game.history({ verbose: true }),
-        squareStyles: squareStyling({ pieceSquare, history })
+        squareStyles: squareStyling({ pieceSquare, history }),
       }));
+
+      if(data.winner===this.state.username){
+        this.setState({winner:true});
+      }
+    });
+
+    this.state.socket.on('checkmate', data=>{
+      
+      if(this.state.id!==data.id) return;
+
+      if(this.state.winner) alert('pobjeda');
+      else alert('poraz');
+      this.props.onOver();
+    });
+
+    this.state.socket.on('stalemate', data=>{
+
+      if(this.state.id!==data.id) return;
+      
+      alert('stalemate je');
+      this.props.onOver();
+    });
+
+    this.state.socket.on('check', data=>{
+
+      if(this.state.id!==data.id) return;
+      
+      alert('sah je. mozes da pomijeras samo kralja');
+    });
+
+    this.state.socket.on('game_over', data=>{
+
+      if(this.state.id!==data.id) return;
+      
+      alert('kraj igre');
+      this.props.onOver();
     });
 
   }
@@ -58,7 +96,7 @@ class HumanVsHuman extends Component {
           ...a,
           ...{
             [c]: {
-              background: "white",
+              background: "gray",
               boxShadow: "inset 0px 0px 10px 0px rgba(0,0,0,0.5)"
             }
           },
@@ -204,7 +242,11 @@ class HumanVsHuman extends Component {
 export default function Game(props) {
   return (
     <div>
-      <HumanVsHuman color={props.color} socket={props.socket} id={props.id}>
+      <HumanVsHuman color={props.color} 
+                    socket={props.socket} 
+                    id={props.id} 
+                    username={props.username}
+                    onOver={props.onOver}>
         {({
           position,
           onDrop,

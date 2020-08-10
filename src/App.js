@@ -62,6 +62,9 @@ class App extends React.Component{
       this.setState({ username:username });
     };
 
+    isOver(){
+      this.setState({username:'', match_started: false, match_created: false, color:''})
+    }
 
     render() {
       var isLoggedIn = this.state.username && (this.state.match_started || this.state.match_created);
@@ -81,7 +84,8 @@ class App extends React.Component{
                                         color={this.state.color}
                                         id={this.state.id}
                                         username={this.state.username}
-                                        socket={this.state.socket}/>}
+                                        socket={this.state.socket}
+                                        onOver={this.isOver}/>}
                 </div>
               </div>
 
