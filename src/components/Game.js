@@ -13,9 +13,9 @@ class HumanVsHuman extends Component {
     pieceSquare: "", //polje na kojem se nalazi figura koja je kliknuta
     square: "", //posljenje kliknuto polje
     history: [], //prethodno odigrani potezi
-    color: this.props.color,
-    socket: this.props.socket,
-    id: this.props.id
+    color: this.props.color, //boja igraca
+    socket: this.props.socket, //socket na kom se igra
+    id: this.props.id //id meca
   };
 
   componentDidMount() {
@@ -39,7 +39,8 @@ class HumanVsHuman extends Component {
         history: this.game.history({ verbose: true }),
         squareStyles: squareStyling({ pieceSquare, history })
       }));
-    })
+    });
+
   }
 
   //brisanje hajlajtovanja
@@ -57,7 +58,7 @@ class HumanVsHuman extends Component {
           ...a,
           ...{
             [c]: {
-              background: "gray",
+              background: "white",
               boxShadow: "inset 0px 0px 10px 0px rgba(0,0,0,0.5)"
             }
           },
@@ -83,8 +84,17 @@ class HumanVsHuman extends Component {
     return true;
   }
 
+  
+  isPromotion(piece,from,to) {
+    if(piece.type==='p' && 
+      ((from.charAt(1)==='7' && to.charAt(1)==='8') ||
+      (from.charAt(1)==='2' && to.charAt(1)==='1'))) return true;
+    else return false
+  }
+
   onDrop = ({ sourceSquare, targetSquare }) => {
     // provjera da li je potez dozvoljen
+    const piece = this.game.get(sourceSquare);
     if(!this.canMove()) return;
 
     let move = this.game.move({
@@ -101,8 +111,10 @@ class HumanVsHuman extends Component {
       squareStyles: squareStyling({ pieceSquare, history })
     }));
 
+    var rep = null;
+    if(this.isPromotion(piece,sourceSquare,targetSquare)) rep='q';
     const tId=this.state.id;
-    this.state.socket.emit('move', {'id': tId, 'from': sourceSquare, "to": targetSquare, 'replace': null});
+    this.state.socket.emit('move', {'id': tId, 'from': sourceSquare, "to": targetSquare, 'replace': rep});
   };
 
   onMouseOverSquare = square => {
@@ -136,6 +148,7 @@ class HumanVsHuman extends Component {
   };
 
   onSquareClick = square => {
+    const piece = this.game.get(this.state.pieceSquare);
     if(!this.canMove()) return;
 
     this.setState(({ history }) => ({
@@ -159,6 +172,8 @@ class HumanVsHuman extends Component {
       pieceSquare: ""
     });
     
+    var rep = null;  
+    if(this.isPromotion(piece,from,square)) rep='q';
     const tId = this.state.id;
     this.state.socket.emit('move', {'id': tId,'from': from, "to": square, 'replace': null});
   };

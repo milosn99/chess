@@ -19,10 +19,8 @@ class App extends React.Component{
 
     componentDidMount() {
       this.state.socket.on('match_created', data => {
-          if(this.state.id===data.id){
               alert(`Mec kreiran na ${data.id}. Cekam protivnika`);
               this.setState({id:data.id});
-          }
       });
 
       this.state.socket.on('match_started', (data)=>{
@@ -66,8 +64,8 @@ class App extends React.Component{
 
 
     render() {
-      const isLoggedIn = this.state.username && (this.state.match_started || this.state.match_created);
-
+      var isLoggedIn = this.state.username && (this.state.match_started || this.state.match_created);
+      isLoggedIn=true;
 
         return (
 
