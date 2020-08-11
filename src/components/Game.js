@@ -210,7 +210,7 @@ class HumanVsHuman extends Component {
     var rep = null;  
     if(this.isPromotion(piece,from,square)) rep='q';
     const tId = this.state.id;
-    this.state.socket.emit('move', {'id': tId,'from': from, "to": square, 'replace': null});
+    this.state.socket.emit('move', {'id': tId,'from': from, "to": square, 'replace': rep});
   };
 
   onSquareRightClick = square =>
