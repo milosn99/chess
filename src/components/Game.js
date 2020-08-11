@@ -42,16 +42,21 @@ class HumanVsHuman extends Component {
         squareStyles: squareStyling({ pieceSquare, history }),
       }));
 
-      if(data.winner===this.state.username){
-        this.setState({winner:true});
-      }
+      
     });
 
     this.state.socket.on('checkmate', data=>{
 
-      if(this.state.winner) alert('pobjeda');
-      else alert('poraz');
-      this.props.onOver();
+      setTimeout(() => {
+        if(data.winner===this.state.username){
+          this.setState({winner:true});
+        }
+  
+        if(this.state.winner) alert('pobjeda');
+        else alert('poraz');
+        this.props.onOver();
+      
+      }, 500)
     });
 
     this.state.socket.on('stalemate', data=>{
