@@ -62,8 +62,8 @@ class App extends React.Component{
       this.setState({ username:username });
     };
 
-    isOver(){
-      this.setState({username:'', match_started: false, match_created: false, color:''})
+    isOver = () => {
+      this.setState({username:'', match_started: false, match_created: false, color:''});
     }
 
     render() {
