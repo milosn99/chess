@@ -48,8 +48,6 @@ class HumanVsHuman extends Component {
     });
 
     this.state.socket.on('checkmate', data=>{
-      
-      if(this.state.id!==data.id) return;
 
       if(this.state.winner) alert('pobjeda');
       else alert('poraz');
@@ -57,23 +55,17 @@ class HumanVsHuman extends Component {
     });
 
     this.state.socket.on('stalemate', data=>{
-
-      if(this.state.id!==data.id) return;
       
       alert('stalemate je');
       this.props.onOver();
     });
 
     this.state.socket.on('check', data=>{
-
-      if(this.state.id!==data.id) return;
       
       alert('sah je. mozes da pomijeras samo kralja');
     });
 
     this.state.socket.on('game_over', data=>{
-
-      if(this.state.id!==data.id) return;
       
       alert('kraj igre');
       this.props.onOver();
