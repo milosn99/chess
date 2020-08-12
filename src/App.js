@@ -2,6 +2,7 @@ import React from 'react';
 import './bootstrap.min.css';
 import './App.css';
 import io from 'socket.io-client';
+import LoadingOverlay from 'react-loading-overlay';
 
 import Login from "./components/Login";
 import Game from './components/Game';
@@ -14,13 +15,15 @@ class App extends React.Component{
         redirect: null,
         color: '',
         match_started: false,
-        match_created: false
+        match_created: false,
+        overlay: false
       }
 
     componentDidMount() {
       this.state.socket.on('match_created', data => {
-              alert(`Mec kreiran na ${data.id}. Cekam protivnika`);
+              //alert(`Mec kreiran na ${data.id}. Cekam protivnika`);
               this.setState({id:data.id});
+              this.setState({overlay:true});
       });
 
       this.state.socket.on('match_started', (data)=>{
@@ -68,17 +71,17 @@ class App extends React.Component{
 
     render() {
       var isLoggedIn = this.state.username && (this.state.match_started || this.state.match_created);
-
+      const text=`Mec kreiran na ${this.state.id}. Cekam protivnika`;
         return (
-
+        
           <div className="App">
-
               <div className="auth-wrapper">
                 <div className="auth-inner">
                   {!isLoggedIn && <Login 
                                           onUsernameChange={this.onUsernameChange}
                                           onFriendlySubmit={this.onFriendlySubmit}
-                                          onRandomSubmit={this.onRandomSubmit}/>
+                                          onRandomSubmit={this.onRandomSubmit}
+                                          overlay={this.state.overlay}/>
                     }
                   {isLoggedIn && <Game
                                         color={this.state.color}
@@ -89,7 +92,7 @@ class App extends React.Component{
                 </div>
               </div>
 
-            </div>
+              </div>
         );
       }
 }
