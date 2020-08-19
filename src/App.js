@@ -2,7 +2,6 @@ import React from 'react';
 import './bootstrap.min.css';
 import './App.css';
 import io from 'socket.io-client';
-import LoadingOverlay from 'react-loading-overlay';
 
 import Login from "./components/Login";
 import Game from './components/Game';
@@ -16,14 +15,14 @@ class App extends React.Component{
         color: '',
         match_started: false,
         match_created: false,
-        overlay: false
+        rep: null,
+        open: false
       }
 
     componentDidMount() {
       this.state.socket.on('match_created', data => {
-              //alert(`Mec kreiran na ${data.id}. Cekam protivnika`);
+              alert(`Mec kreiran na ${data.id}. Cekam protivnika`);
               this.setState({id:data.id});
-              this.setState({overlay:true});
       });
 
       this.state.socket.on('match_started', (data)=>{
@@ -52,7 +51,6 @@ class App extends React.Component{
       else{
           this.state.socket.emit('join_match', {"username": this.state.username, "match_type": 'friendly', "id": this.state.id});
       }
-      //this.setState({overlay:true});
     }
 
 
@@ -71,7 +69,8 @@ class App extends React.Component{
 
     render() {
       var isLoggedIn = this.state.username && (this.state.match_started || this.state.match_created);
-      const text=`Mec kreiran na ${this.state.id}. Cekam protivnika`;
+      // const text=`Mec kreiran na ${this.state.id}. Cekam protivnika`;
+      // isLoggedIn=true;
         return (
         
           <div className="App">
@@ -80,8 +79,7 @@ class App extends React.Component{
                   {!isLoggedIn && <Login 
                                           onUsernameChange={this.onUsernameChange}
                                           onFriendlySubmit={this.onFriendlySubmit}
-                                          onRandomSubmit={this.onRandomSubmit}
-                                          overlay={this.state.overlay}/>
+                                          onRandomSubmit={this.onRandomSubmit}/>
                     }
                   {isLoggedIn && <Game
                                         color={this.state.color}

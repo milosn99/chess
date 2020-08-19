@@ -1,5 +1,4 @@
 import React from "react";
-import { propTypes } from "react-bootstrap/esm/Image";
 
 
 const Login = ({onUsernameChange, onFriendlySubmit, onRandomSubmit, overlay}) => {
@@ -21,7 +20,7 @@ const Login = ({onUsernameChange, onFriendlySubmit, onRandomSubmit, overlay}) =>
                         <input type="checkbox" className="custom-control-input" id="customCheck1" />
                     </div>
                 </div>
-            {!overlay &&
+            
                 <div><button 
                     onClick={onFriendlySubmit}
                     type="submit" 
@@ -34,7 +33,7 @@ const Login = ({onUsernameChange, onFriendlySubmit, onRandomSubmit, overlay}) =>
                     type="submit" 
                     className="btn btn-primary btn-block">Random</button>
                 </div>
-            }</form>
+            </form>
     );
 };
 
