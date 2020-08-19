@@ -60,20 +60,23 @@ class HumanVsHuman extends Component {
     });
 
     this.state.socket.on('stalemate', data=>{
-      
-      alert('stalemate je');
-      this.props.onOver();
+      setTimeout(() => {
+        alert('stalemate je');
+        this.props.onOver();
+      }, 500)
     });
 
     this.state.socket.on('check', data=>{
-      
-      alert('sah je. mozes da pomijeras samo kralja');
+      setTimeout(() => {
+        alert('sah je. mozes da pomijeras samo kralja');
+      }, 500)
     });
 
     this.state.socket.on('game_over', data=>{
-      
-      alert('kraj igre');
-      this.props.onOver();
+      setTimeout(() => {
+        alert('kraj igre');
+        this.props.onOver();
+      }, 500)
     });
 
   }
