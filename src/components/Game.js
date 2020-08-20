@@ -3,6 +3,23 @@ import PropTypes from "prop-types";
 import Chess from "chess.js";
 import Chessboard from "chessboardjsx";
 
+let deadBlack={
+  "p": 0,
+  "q": 0,
+  "r": 0,
+  "n": 0,
+  "b": 0
+}
+
+let deadWhite={
+  "p": 0,
+  "q": 0,
+  "r": 0,
+  "n": 0,
+  "b": 0
+}
+
+
 class HumanVsHuman extends Component {
   static propTypes = { children: PropTypes.func };
 
@@ -23,9 +40,17 @@ class HumanVsHuman extends Component {
   componentDidMount() {
     this.game = new Chess();
 
+    deadBlack["p"]=5;
+
     this.state.socket.on('opponent_move', data=>{
 
       if(this.state.id!==data.id) return;
+
+      const piece = this.game.get(data.to);
+      if(piece!==null) {
+        if(piece.color==='b') deadBlack[piece.type]+=1;
+        else deadWhite[piece.type]+=1;
+      }
 
       let move = this.game.move({
         from: data.from,
@@ -136,6 +161,12 @@ class HumanVsHuman extends Component {
     const piece = this.game.get(sourceSquare);
     if(!this.canMove()) return;
 
+    const piece2 = this.game.get(targetSquare);
+    if(piece2!==null) {
+      if(piece2.color==='b') deadBlack[piece2.type]+=1;
+      else deadWhite[piece2.type]+=1;
+    }
+
     let move = this.game.move({
       from: sourceSquare,
       to: targetSquare,
@@ -179,16 +210,20 @@ class HumanVsHuman extends Component {
   // central squares get diff dropSquareStyles
   onDragOverSquare = square => {
     this.setState({
-      dropSquareStyle:
-        square === "e4" || square === "d4" || square === "e5" || square === "d5"
-          ? { backgroundColor: "cornFlowerBlue" }
-          : { boxShadow: "inset 0 0 1px 4px rgb(255, 255, 0)" }
+      dropSquareStyle: { boxShadow: "inset 0 0 1px 4px cornFlowerBlue" }
     });
   };
 
   onSquareClick = square => {
     const piece = this.game.get(this.state.pieceSquare);
     if(!this.canMove()) return;
+
+    const piece2 = this.game.get(this.state.pieceSquare);
+    if(piece2!==null) {
+      if(piece2.color==='b') deadBlack[piece2.type]+=1;
+      else deadWhite[piece2.type]+=1;
+    }
+
 
     this.setState(({ history }) => ({
       squareStyles: squareStyling({ pieceSquare: square, history }),
@@ -245,7 +280,6 @@ class HumanVsHuman extends Component {
 }
 
 export default function Game(props) {
-  const text = "kurac";
   return (
     <div className="human-vs-human">
       <div className="igra"><HumanVsHuman color={props.color} 
@@ -287,8 +321,20 @@ export default function Game(props) {
         )}
       </HumanVsHuman>
       </div>
-          <div className="info">{props.white_player}
-          {props.black_player}</div>
+          <div className="info">
+            {props.black_player} <br/>
+            pjesak: {deadBlack["p"]} <br/>
+            konj: {deadBlack["n"]} <br/>
+            kraljica:{deadBlack["q"]} <br/>
+            lovac:{deadBlack["b"]} <br/>
+            top:{deadBlack["r"]} <br/> <br/>
+            {props.white_player} <br/>
+            pjesak: {deadWhite["p"]} <br/>
+            konj: {deadWhite["n"]} <br/>
+            kraljica:{deadWhite["q"]} <br/>
+            lovac:{deadWhite["b"]} <br/>
+            top:{deadWhite["r"]} <br/>
+          </div>
     </div>
   );
 }

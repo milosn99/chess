@@ -61,6 +61,7 @@ body, html, .App, #root, .auth-wrapper {
 
 .human-vs-human .info{
   margin:0;
+  color: white;
 }
 
 .login-inner{
@@ -72,7 +73,7 @@ body, html, .App, #root, .auth-wrapper {
 .game-inner{
   padding: 7px 7px 7px 7px;
   background-color:rgba(256, 256, 256, 0.5);
-  width: 75%;
+
 }
 
 .auth-wrapper .form-control:focus {
