@@ -42,7 +42,25 @@ body, html, .App, #root, .auth-wrapper {
   margin: auto;
   box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
   border-radius: 15px;
-  transition: all .3s;
+  transition: all .3s; 
+  display: flex;
+  align-items: flex-start;
+  justify-content:flex-start;
+}
+
+.human-vs-human{
+  display: flex;
+  align-items: flex-start;
+  justify-content:flex-start;
+  padding : 4px;
+}
+
+.human-vs-human .igra{
+  margin: 0 8px 0 0;
+}
+
+.human-vs-human .info{
+  margin:0;
 }
 
 .login-inner{
@@ -54,6 +72,7 @@ body, html, .App, #root, .auth-wrapper {
 .game-inner{
   padding: 7px 7px 7px 7px;
   background-color:rgba(256, 256, 256, 0.5);
+  width: 75%;
 }
 
 .auth-wrapper .form-control:focus {
@@ -73,5 +92,6 @@ body, html, .App, #root, .auth-wrapper {
 }
 
 .game{
-  background-color: darkblue;
+  background-color: #000046;
+  display: flex;
 }

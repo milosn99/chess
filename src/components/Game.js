@@ -68,7 +68,7 @@ class HumanVsHuman extends Component {
 
     this.state.socket.on('check', data=>{
       setTimeout(() => {
-        alert('sah je. mozes da pomijeras samo kralja');
+        alert('sah');
       }, 500)
     });
 
@@ -222,7 +222,9 @@ class HumanVsHuman extends Component {
       squareStyles: { [square]: { backgroundColor: "darkBlue" } }
     });
 
-  calcWidth = ({ screenWidth, screenHeight }) =>{ return screenWidth/2.3;}
+  calcWidth = ({ screenWidth, screenHeight }) =>{ 
+    return screenWidth>screenHeight? screenWidth/2.3:screenHeight/2.3;
+  }
     
   render() {
     const { fen, dropSquareStyle, squareStyles } = this.state;
@@ -243,9 +245,10 @@ class HumanVsHuman extends Component {
 }
 
 export default function Game(props) {
+  const text = "kurac";
   return (
-    <div>
-      <HumanVsHuman color={props.color} 
+    <div className="human-vs-human">
+      <div className="igra"><HumanVsHuman color={props.color} 
                     socket={props.socket} 
                     id={props.id} 
                     username={props.username}
@@ -278,11 +281,14 @@ export default function Game(props) {
             onDragOverSquare={onDragOverSquare}
             onSquareClick={onSquareClick}
             onSquareRightClick={onSquareRightClick}
-            lightSquareStyle={{ backgroundColor: "AliceBlue" }}
-            darkSquareStyle={{ backgroundColor: "CornFlowerBlue" }}
+            lightSquareStyle={{ backgroundColor: "#e0e0ff" }}
+            darkSquareStyle={{ backgroundColor: "#353586" }}
           />
         )}
       </HumanVsHuman>
+      </div>
+          <div className="info">{props.white_player}
+          {props.black_player}</div>
     </div>
   );
 }

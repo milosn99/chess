@@ -16,7 +16,9 @@ class App extends React.Component{
         match_started: false,
         match_created: false,
         rep: null,
-        open: false
+        open: false,
+        player_white: 'milos',
+        player_black: 'sanja'
       }
 
     componentDidMount() {
@@ -36,6 +38,7 @@ class App extends React.Component{
                   this.setState({color:'b'});
               }
           this.setState({match_started: true, id:data.id});
+          this.setState({player_white: data.white_player, player_black:data.black_player});
       });
     }
 
@@ -89,7 +92,9 @@ class App extends React.Component{
                                         id={this.state.id}
                                         username={this.state.username}
                                         socket={this.state.socket}
-                                        onOver={this.isOver}/>}
+                                        onOver={this.isOver}
+                                        white_player={this.state.player_white}
+                                        black_player={this.state.player_black}/>}
                 </div>
               </div>
 
