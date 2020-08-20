@@ -72,7 +72,7 @@ class App extends React.Component{
 
     render() {
       var isLoggedIn = this.state.username && this.state.match_started;
-      //isLoggedIn=true;
+      isLoggedIn=true;
       const aName = isLoggedIn? "game":"login";
       const iName = isLoggedIn? "game-inner": "login-inner";
         return (

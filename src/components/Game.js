@@ -19,6 +19,7 @@ class HumanVsHuman extends Component {
     id: this.props.id, //id meca
     winner: false, //da li je pobijedio ili nije
     username: this.props.username, //username igraca
+    middle_text: '',
     deadWhite:{
       "p": 0,
       "q": 0,
@@ -74,8 +75,8 @@ class HumanVsHuman extends Component {
           this.setState({winner:true});
         }
   
-        if(this.state.winner) alert('pobjeda');
-        else alert('poraz');
+        if(this.state.winner) this.setState({middle_text:'You won!'});
+        else this.setState({middle_text:'You lost!'});
         this.props.onOver();
       
       }, 500)
@@ -83,20 +84,20 @@ class HumanVsHuman extends Component {
 
     this.state.socket.on('stalemate', data=>{
       setTimeout(() => {
-        alert('stalemate je');
+        this.setState({middle_text:'It\'s a stalemate. The game is over.'});
         this.props.onOver();
       }, 500)
     });
 
     this.state.socket.on('check', data=>{
       setTimeout(() => {
-        alert('sah');
+        this.setState({middle_text:'Check!'});
       }, 500)
     });
 
     this.state.socket.on('game_over', data=>{
       setTimeout(() => {
-        alert('kraj igre');
+        this.setState({middle_text:'The game is over'});
         this.props.onOver();
       }, 500)
     });
@@ -273,7 +274,8 @@ class HumanVsHuman extends Component {
       onSquareRightClick: this.onSquareRightClick,
       calcWidth: this.calcWidth,
       deadBlack: this.state.deadBlack,
-      deadWhite: this.state.deadWhite
+      deadWhite: this.state.deadWhite,
+      middle_text:this.state.middle_text
     });
   }
 }
@@ -297,7 +299,8 @@ export default function Game(props) {
           onSquareRightClick,
           calcWidth,
           deadWhite,
-          deadBlack
+          deadBlack,
+          middle_text
         }) => (
           <div className="human-vs-human"><div className="igra"><Chessboard 
             id="humanVsHuman"
@@ -324,7 +327,8 @@ export default function Game(props) {
           konj: {deadBlack["n"]} <br/>
           kraljica:{deadBlack["q"]} <br/>
           lovac:{deadBlack["b"]} <br/>
-          top:{deadBlack["r"]} <br/> <br/>
+          top:{deadBlack["r"]} <br/> 
+          {middle_text}<br/>
           {props.white_player} <br/>
           pjesak: {deadWhite["p"]} <br/>
           konj: {deadWhite["n"]} <br/>
