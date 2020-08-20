@@ -22,7 +22,7 @@ class App extends React.Component{
     componentDidMount() {
       this.state.socket.on('match_created', data => {
               alert(`Mec kreiran na ${data.id}. Cekam protivnika`);
-              this.setState({id:data.id});
+              this.setState({id:data.id, match_created:true});
       });
 
       this.state.socket.on('match_started', (data)=>{
@@ -68,20 +68,23 @@ class App extends React.Component{
     }
 
     render() {
-      var isLoggedIn = this.state.username && (this.state.match_started || this.state.match_created);
-      // const text=`Mec kreiran na ${this.state.id}. Cekam protivnika`;
-      // isLoggedIn=true;
+      var isLoggedIn = this.state.username && this.state.match_started;
+      isLoggedIn=true;
+      const aName = isLoggedIn? "game":"login";
+      const iName = isLoggedIn? "game-inner": "login-inner";
         return (
         
-          <div className="App">
+          <div className={`App ${aName}`}>
               <div className="auth-wrapper">
-                <div className="auth-inner">
-                  {!isLoggedIn && <Login 
+                <div className={`auth-inner ${iName}`}>
+                  {(!isLoggedIn && !this.state.match_created) && <Login
                                           onUsernameChange={this.onUsernameChange}
                                           onFriendlySubmit={this.onFriendlySubmit}
                                           onRandomSubmit={this.onRandomSubmit}/>
                     }
-                  {isLoggedIn && <Game
+                  {(!isLoggedIn && this.state.match_created) && <div>
+                    Mec kreiran na ${this.state.id}. Cekam protivnika</div>}
+                  {isLoggedIn && <Game  
                                         color={this.state.color}
                                         id={this.state.id}
                                         username={this.state.username}

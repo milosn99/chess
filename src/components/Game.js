@@ -90,6 +90,7 @@ class HumanVsHuman extends Component {
 
   // prikazivanje mogucih polja
   highlightSquare = (sourceSquare, squaresToHighlight) => {
+    if(this.game.turn()!==this.state.color) return;
     const highlightStyles = [sourceSquare, ...squaresToHighlight].reduce(
       (a, c) => {
         return {
@@ -221,6 +222,7 @@ class HumanVsHuman extends Component {
       squareStyles: { [square]: { backgroundColor: "darkBlue" } }
     });
 
+  calcWidth = ({ screenWidth, screenHeight }) =>{ return screenWidth/2.3;}
     
   render() {
     const { fen, dropSquareStyle, squareStyles } = this.state;
@@ -234,7 +236,8 @@ class HumanVsHuman extends Component {
       dropSquareStyle,
       onDragOverSquare: this.onDragOverSquare,
       onSquareClick: this.onSquareClick,
-      onSquareRightClick: this.onSquareRightClick
+      onSquareRightClick: this.onSquareRightClick,
+      calcWidth: this.calcWidth
     });
   }
 }
@@ -256,11 +259,12 @@ export default function Game(props) {
           dropSquareStyle,
           onDragOverSquare,
           onSquareClick,
-          onSquareRightClick
+          onSquareRightClick,
+          calcWidth
         }) => (
           <Chessboard
             id="humanVsHuman"
-            width={320}
+            calcWidth={calcWidth}
             position={position}
             onDrop={onDrop}
             onMouseOverSquare={onMouseOverSquare}
