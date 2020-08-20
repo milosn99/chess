@@ -20,6 +20,7 @@ class HumanVsHuman extends Component {
     winner: false, //da li je pobijedio ili nije
     username: this.props.username, //username igraca
     middle_text: '',
+    isOver: false,
     deadWhite:{
       "p": 0,
       "q": 0,
@@ -77,7 +78,7 @@ class HumanVsHuman extends Component {
   
         if(this.state.winner) this.setState({middle_text:'You won!'});
         else this.setState({middle_text:'You lost!'});
-        this.props.onOver();
+        this.setState({isOver:true});
       
       }, 500)
     });
@@ -85,7 +86,7 @@ class HumanVsHuman extends Component {
     this.state.socket.on('stalemate', data=>{
       setTimeout(() => {
         this.setState({middle_text:'It\'s a stalemate. The game is over.'});
-        this.props.onOver();
+        this.setState({isOver:true});
       }, 500)
     });
 
@@ -98,7 +99,7 @@ class HumanVsHuman extends Component {
     this.state.socket.on('game_over', data=>{
       setTimeout(() => {
         this.setState({middle_text:'The game is over'});
-        this.props.onOver();
+        this.setState({isOver:true});
       }, 500)
     });
 
@@ -275,7 +276,8 @@ class HumanVsHuman extends Component {
       calcWidth: this.calcWidth,
       deadBlack: this.state.deadBlack,
       deadWhite: this.state.deadWhite,
-      middle_text:this.state.middle_text
+      middle_text:this.state.middle_text,
+      isOver: this.state.isOver
     });
   }
 }
@@ -300,7 +302,8 @@ export default function Game(props) {
           calcWidth,
           deadWhite,
           deadBlack,
-          middle_text
+          middle_text,
+          isOver
         }) => (
           <div className="human-vs-human"><div className="igra"><Chessboard 
             id="humanVsHuman"
@@ -329,6 +332,10 @@ export default function Game(props) {
           lovac:{deadBlack["b"]} <br/>
           top:{deadBlack["r"]} <br/> 
           {middle_text}<br/>
+          {isOver && <button 
+                    onClick={props.onOver}
+                    type="submit" 
+                    className="btn btn-primary btn-block">Go back</button>}
           {props.white_player} <br/>
           pjesak: {deadWhite["p"]} <br/>
           konj: {deadWhite["n"]} <br/>
