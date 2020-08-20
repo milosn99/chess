@@ -41,7 +41,7 @@ class HumanVsHuman extends Component {
     this.game = new Chess();
 
     this.state.socket.on('opponent_move', data=>{
-
+      this.setState({middle_text:''});
       if(this.state.id!==data.id) return;
 
       const piece = this.game.get(data.to);
