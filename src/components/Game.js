@@ -3,22 +3,6 @@ import PropTypes from "prop-types";
 import Chess from "chess.js";
 import Chessboard from "chessboardjsx";
 
-let deadBlack={
-  "p": 0,
-  "q": 0,
-  "r": 0,
-  "n": 0,
-  "b": 0
-}
-
-let deadWhite={
-  "p": 0,
-  "q": 0,
-  "r": 0,
-  "n": 0,
-  "b": 0
-}
-
 
 class HumanVsHuman extends Component {
   static propTypes = { children: PropTypes.func };
@@ -34,13 +18,26 @@ class HumanVsHuman extends Component {
     socket: this.props.socket, //socket na kom se igra
     id: this.props.id, //id meca
     winner: false, //da li je pobijedio ili nije
-    username: this.props.username //username igraca
+    username: this.props.username, //username igraca
+    deadWhite:{
+      "p": 0,
+      "q": 0,
+      "r": 0,
+      "n": 0,
+      "b": 0
+    },
+    deadBlack:{
+      "p": 0,
+      "q": 0,
+      "r": 0,
+      "n": 0,
+      "b": 0
+    }
+    
   };
 
   componentDidMount() {
     this.game = new Chess();
-
-    deadBlack["p"]=5;
 
     this.state.socket.on('opponent_move', data=>{
 
@@ -48,8 +45,8 @@ class HumanVsHuman extends Component {
 
       const piece = this.game.get(data.to);
       if(piece!==null) {
-        if(piece.color==='b') deadBlack[piece.type]+=1;
-        else deadWhite[piece.type]+=1;
+        if(piece.color==='b') this.state.deadBlack[piece.type]+=1;
+        else this.state.deadWhite[piece.type]+=1;
       }
 
       let move = this.game.move({
@@ -163,8 +160,8 @@ class HumanVsHuman extends Component {
 
     const piece2 = this.game.get(targetSquare);
     if(piece2!==null) {
-      if(piece2.color==='b') deadBlack[piece2.type]+=1;
-      else deadWhite[piece2.type]+=1;
+      if(piece2.color==='b') this.state.deadBlack[piece2.type]+=1;
+      else this.state.deadWhite[piece2.type]+=1;
     }
 
     let move = this.game.move({
@@ -220,8 +217,8 @@ class HumanVsHuman extends Component {
 
     const piece2 = this.game.get(this.state.pieceSquare);
     if(piece2!==null) {
-      if(piece2.color==='b') deadBlack[piece2.type]+=1;
-      else deadWhite[piece2.type]+=1;
+      if(piece2.color==='b') this.state.deadBlack[piece2.type]+=1;
+      else this.state.deadWhite[piece2.type]+=1;
     }
 
 
@@ -274,15 +271,16 @@ class HumanVsHuman extends Component {
       onDragOverSquare: this.onDragOverSquare,
       onSquareClick: this.onSquareClick,
       onSquareRightClick: this.onSquareRightClick,
-      calcWidth: this.calcWidth
+      calcWidth: this.calcWidth,
+      deadBlack: this.state.deadBlack,
+      deadWhite: this.state.deadWhite
     });
   }
 }
 
 export default function Game(props) {
   return (
-    <div className="human-vs-human">
-      <div className="igra"><HumanVsHuman color={props.color} 
+      <div><HumanVsHuman color={props.color} 
                     socket={props.socket} 
                     id={props.id} 
                     username={props.username}
@@ -297,9 +295,11 @@ export default function Game(props) {
           onDragOverSquare,
           onSquareClick,
           onSquareRightClick,
-          calcWidth
+          calcWidth,
+          deadWhite,
+          deadBlack
         }) => (
-          <Chessboard
+          <div className="human-vs-human"><div className="igra"><Chessboard 
             id="humanVsHuman"
             calcWidth={calcWidth}
             position={position}
@@ -317,25 +317,24 @@ export default function Game(props) {
             onSquareRightClick={onSquareRightClick}
             lightSquareStyle={{ backgroundColor: "#e0e0ff" }}
             darkSquareStyle={{ backgroundColor: "#353586" }}
-          />
+          /></div>
+          <div className="info">
+          {props.black_player} <br/>
+          pjesak: {deadBlack["p"]} <br/>
+          konj: {deadBlack["n"]} <br/>
+          kraljica:{deadBlack["q"]} <br/>
+          lovac:{deadBlack["b"]} <br/>
+          top:{deadBlack["r"]} <br/> <br/>
+          {props.white_player} <br/>
+          pjesak: {deadWhite["p"]} <br/>
+          konj: {deadWhite["n"]} <br/>
+          kraljica:{deadWhite["q"]} <br/>
+          lovac:{deadWhite["b"]} <br/>
+          top:{deadWhite["r"]} <br/>
+        </div></div>
         )}
       </HumanVsHuman>
       </div>
-          <div className="info">
-            {props.black_player} <br/>
-            pjesak: {deadBlack["p"]} <br/>
-            konj: {deadBlack["n"]} <br/>
-            kraljica:{deadBlack["q"]} <br/>
-            lovac:{deadBlack["b"]} <br/>
-            top:{deadBlack["r"]} <br/> <br/>
-            {props.white_player} <br/>
-            pjesak: {deadWhite["p"]} <br/>
-            konj: {deadWhite["n"]} <br/>
-            kraljica:{deadWhite["q"]} <br/>
-            lovac:{deadWhite["b"]} <br/>
-            top:{deadWhite["r"]} <br/>
-          </div>
-    </div>
   );
 }
 
