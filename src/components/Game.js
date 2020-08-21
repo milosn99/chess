@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import Chess from "chess.js";
 import Chessboard from "chessboardjsx";
+import {Table} from 'react-bootstrap';
 
 
 class HumanVsHuman extends Component {
@@ -326,23 +327,55 @@ export default function Game(props) {
             darkSquareStyle={{ backgroundColor: "#353586" }}
           /></div>
           <div className="info">
-          {props.black_player} <br/>
-          pjesak: {deadBlack["p"]} <br/>
-          konj: {deadBlack["n"]} <br/>
-          kraljica:{deadBlack["q"]} <br/>
-          lovac:{deadBlack["b"]} <br/>
-          top:{deadBlack["r"]} <br/> 
+          <Table striped bordered hover variant="dark">
+              <thead>
+                <tr>
+                  <th>Username</th>
+                  <th>Pawn</th>
+                  <th>Knight</th>
+                  <th>Rook</th>
+                  <th>Bishop</th>
+                  <th>Queen</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>{props.black_player}</td>
+                  <td>{deadBlack["p"]}</td>
+                  <td>{deadBlack["n"]}</td>
+                  <td>{deadBlack["r"]}</td>
+                  <td>{deadBlack["b"]}</td>
+                  <td>{deadBlack["q"]}</td>
+                </tr>
+              </tbody>
+            </Table>
           {middle_text}<br/>
           {isOver && <button 
                     onClick={props.onOver}
                     type="submit" 
                     className="btn btn-primary btn-block">Go back</button>}
-          {props.white_player} <br/>
-          pjesak: {deadWhite["p"]} <br/>
-          konj: {deadWhite["n"]} <br/>
-          kraljica:{deadWhite["q"]} <br/>
-          lovac:{deadWhite["b"]} <br/>
-          top:{deadWhite["r"]} <br/>
+          <div className="bottom"><Table striped bordered hover>
+              <thead>
+                <tr>
+                  <th>Username</th>
+                  <th>Pawn</th>
+                  <th>Knight</th>
+                  <th>Rook</th>
+                  <th>Bishop</th>
+                  <th>Queen</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>{props.white_player}</td>
+                  <td>{deadWhite["p"]}</td>
+                  <td>{deadWhite["n"]}</td>
+                  <td>{deadWhite["r"]}</td>
+                  <td>{deadWhite["b"]}</td>
+                  <td>{deadWhite["q"]}</td>
+                </tr>
+              </tbody>
+            </Table></div>
         </div></div>
         )}
       </HumanVsHuman>
