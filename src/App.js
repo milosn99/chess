@@ -20,7 +20,8 @@ class App extends React.Component {
     open: false,
     player_white: "",
     player_black: "",
-    stats: "",
+    stats: '',
+    //stats:'[{"username":"sanja","n_points":5}]'
   };
 
   componentDidMount() {
@@ -96,13 +97,13 @@ class App extends React.Component {
       match_started: false,
       match_created: false,
       color: "",
-      stats: null,
+      stats: "",
     });
   };
 
   render() {
     var isLoggedIn = this.state.username && this.state.match_started;
-    isLoggedIn=true;
+    //isLoggedIn=true;
     const aName = isLoggedIn ? "game" : "login";
     const iName = isLoggedIn ? "game-inner" : "login-inner";
     return (
