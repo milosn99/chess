@@ -288,7 +288,8 @@ export default function Game(props) {
                     socket={props.socket} 
                     id={props.id} 
                     username={props.username}
-                    onOver={props.onOver}>
+                    //onOver={props.onOver}
+                    >
         {({
           position,
           onDrop,

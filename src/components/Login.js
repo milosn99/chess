@@ -1,7 +1,7 @@
 import React from "react";
 
 
-const Login = ({onUsernameChange, onFriendlySubmit, onRandomSubmit, overlay}) => {
+const Login = ({onUsernameChange, onFriendlySubmit, onRandomSubmit, onLeaderboardSubmit}) => {
     return (
             <form>
                 <h3>Chess Game</h3>
@@ -32,6 +32,12 @@ const Login = ({onUsernameChange, onFriendlySubmit, onRandomSubmit, overlay}) =>
                     onClick={onRandomSubmit}
                     type="submit" 
                     className="btn btn-primary btn-block">Random</button>
+
+                <button 
+                    onClick={onLeaderboardSubmit}
+                    type="submit" 
+                    className="btn btn-primary btn-block">Leaderboard</button>
+                
                 </div>
             </form>
     );
