@@ -2,8 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import Chess from "chess.js";
 import Chessboard from "chessboardjsx";
-import {Table} from 'react-bootstrap';
-
+import { Table } from "react-bootstrap";
 
 class HumanVsHuman extends Component {
   static propTypes = { children: PropTypes.func };
@@ -20,44 +19,43 @@ class HumanVsHuman extends Component {
     id: this.props.id, //id meca
     winner: false, //da li je pobijedio ili nije
     username: this.props.username, //username igraca
-    middle_text: '',
+    middle_text: "",
     isOver: false,
-    deadWhite:{
-      "p": 0,
-      "q": 0,
-      "r": 0,
-      "n": 0,
-      "b": 0
+    deadWhite: {
+      p: 0,
+      q: 0,
+      r: 0,
+      n: 0,
+      b: 0,
     },
-    deadBlack:{
-      "p": 0,
-      "q": 0,
-      "r": 0,
-      "n": 0,
-      "b": 0
-    }
-    
+    deadBlack: {
+      p: 0,
+      q: 0,
+      r: 0,
+      n: 0,
+      b: 0,
+    },
   };
 
   componentDidMount() {
     this.game = new Chess();
 
-    this.state.socket.on('opponent_move', data=>{
-      this.setState({middle_text:''});
-      if(this.state.id!==data.id) return;
+    this.state.socket.on("opponent_move", (data) => {
+      this.setState({ middle_text: "" });
+      if (this.state.id !== data.id) return;
 
       const piece = this.game.get(data.to);
-      if(piece!==null) {
-        if(piece.color==='b') this.state.deadBlack[piece.type]+=1;
-        else this.state.deadWhite[piece.type]+=1;
+      if (piece !== null) {
+        if (piece.color === "b") this.state.deadBlack[piece.type] += 1;
+        else this.state.deadWhite[piece.type] += 1;
       }
 
       let move = this.game.move({
         from: data.from,
         to: data.to,
-        promotion: "q"
-      })
-  
+        promotion: "q",
+      });
+
       // nedozvoljen potez
       if (move === null) return;
 
@@ -66,56 +64,51 @@ class HumanVsHuman extends Component {
         history: this.game.history({ verbose: true }),
         squareStyles: squareStyling({ pieceSquare, history }),
       }));
-
-      
     });
 
-    this.state.socket.on('checkmate', data=>{
-
+    this.state.socket.on("checkmate", (data) => {
       setTimeout(() => {
-        if(data.winner===this.state.username){
-          this.setState({winner:true});
+        if (data.winner === this.state.username) {
+          this.setState({ winner: true });
         }
-  
-        if(this.state.winner) this.setState({middle_text:'You won!'});
-        else this.setState({middle_text:'You lost!'});
-        this.setState({isOver:true});
-      
-      }, 500)
+
+        if (this.state.winner) this.setState({ middle_text: "You won!" });
+        else this.setState({ middle_text: "You lost!" });
+        this.setState({ isOver: true });
+      }, 500);
     });
 
-    this.state.socket.on('stalemate', data=>{
+    this.state.socket.on("stalemate", (data) => {
       setTimeout(() => {
-        this.setState({middle_text:'It\'s a stalemate. The game is over.'});
-        this.setState({isOver:true});
-      }, 500)
+        this.setState({ middle_text: "It's a stalemate. The game is over." });
+        this.setState({ isOver: true });
+      }, 500);
     });
 
-    this.state.socket.on('check', data=>{
+    this.state.socket.on("check", (data) => {
       setTimeout(() => {
-        this.setState({middle_text:'Check!'});
-      }, 500)
+        this.setState({ middle_text: "Check!" });
+      }, 500);
     });
 
-    this.state.socket.on('game_over', data=>{
+    this.state.socket.on("game_over", (data) => {
       setTimeout(() => {
-        this.setState({middle_text:'The game is over'});
-        this.setState({isOver:true});
-      }, 500)
+        this.setState({ middle_text: "The game is over" });
+        this.setState({ isOver: true });
+      }, 500);
     });
-
   }
 
   //brisanje hajlajtovanja
   removeHighlightSquare = () => {
     this.setState(({ pieceSquare, history }) => ({
-      squareStyles: squareStyling({ pieceSquare, history })
+      squareStyles: squareStyling({ pieceSquare, history }),
     }));
   };
 
   // prikazivanje mogucih polja
   highlightSquare = (sourceSquare, squaresToHighlight) => {
-    if(this.game.turn()!==this.state.color) return;
+    if (this.game.turn() !== this.state.color) return;
     const highlightStyles = [sourceSquare, ...squaresToHighlight].reduce(
       (a, c) => {
         return {
@@ -123,75 +116,84 @@ class HumanVsHuman extends Component {
           ...{
             [c]: {
               background: "gray",
-              boxShadow: "inset 0px 0px 10px 0px rgba(0,0,0,0.5)"
-            }
+              boxShadow: "inset 0px 0px 10px 0px rgba(0,0,0,0.5)",
+            },
           },
           ...squareStyling({
             history: this.state.history,
-            pieceSquare: this.state.pieceSquare
-          })
+            pieceSquare: this.state.pieceSquare,
+          }),
         };
       },
       {}
     );
 
     this.setState(({ squareStyles }) => ({
-      squareStyles: { ...squareStyles, ...highlightStyles }
+      squareStyles: { ...squareStyles, ...highlightStyles },
     }));
   };
 
   canMove = () => {
-    if  (this.game.game_over() === true ||
-    (this.game.turn() !== this.state.color)) {
-         return false;
-    } 
+    if (
+      this.game.game_over() === true ||
+      this.game.turn() !== this.state.color
+    ) {
+      return false;
+    }
     return true;
-  }
+  };
 
-  
-  isPromotion(piece,from,to) {
-    if(piece.type==='p' && 
-      ((from.charAt(1)==='7' && to.charAt(1)==='8') ||
-      (from.charAt(1)==='2' && to.charAt(1)==='1'))) return true;
-    else return false
+  isPromotion(piece, from, to) {
+    if (
+      piece.type === "p" &&
+      ((from.charAt(1) === "7" && to.charAt(1) === "8") ||
+        (from.charAt(1) === "2" && to.charAt(1) === "1"))
+    )
+      return true;
+    else return false;
   }
 
   onDrop = ({ sourceSquare, targetSquare }) => {
     // provjera da li je potez dozvoljen
     const piece = this.game.get(sourceSquare);
-    if(!this.canMove()) return;
+    if (!this.canMove()) return;
 
     const piece2 = this.game.get(targetSquare);
-    if(piece2!==null) {
-      if(piece2.color==='b') this.state.deadBlack[piece2.type]+=1;
-      else this.state.deadWhite[piece2.type]+=1;
+    if (piece2 !== null) {
+      if (piece2.color === "b") this.state.deadBlack[piece2.type] += 1;
+      else this.state.deadWhite[piece2.type] += 1;
     }
 
     let move = this.game.move({
       from: sourceSquare,
       to: targetSquare,
-      promotion: "q"
-    })
+      promotion: "q",
+    });
 
     // nedozvoljen potez
     if (move === null) return;
     this.setState(({ history, pieceSquare }) => ({
       fen: this.game.fen(),
       history: this.game.history({ verbose: true }),
-      squareStyles: squareStyling({ pieceSquare, history })
+      squareStyles: squareStyling({ pieceSquare, history }),
     }));
 
     var rep = null;
-    if(this.isPromotion(piece,sourceSquare,targetSquare)) rep='q';
-    const tId=this.state.id;
-    this.state.socket.emit('move', {'id': tId, 'from': sourceSquare, "to": targetSquare, 'replace': rep});
+    if (this.isPromotion(piece, sourceSquare, targetSquare)) rep = "q";
+    const tId = this.state.id;
+    this.state.socket.emit("move", {
+      id: tId,
+      from: sourceSquare,
+      to: targetSquare,
+      replace: rep,
+    });
   };
 
-  onMouseOverSquare = square => {
+  onMouseOverSquare = (square) => {
     // uzima listu mogucih poteza
     let moves = this.game.moves({
       square: square,
-      verbose: true
+      verbose: true,
     });
 
     // ako nema mogucih poteza return
@@ -205,35 +207,34 @@ class HumanVsHuman extends Component {
     this.highlightSquare(square, squaresToHighlight);
   };
 
-  onMouseOutSquare = square => this.removeHighlightSquare(square);
+  onMouseOutSquare = (square) => this.removeHighlightSquare(square);
 
   // central squares get diff dropSquareStyles
-  onDragOverSquare = square => {
+  onDragOverSquare = (square) => {
     this.setState({
-      dropSquareStyle: { boxShadow: "inset 0 0 1px 4px cornFlowerBlue" }
+      dropSquareStyle: { boxShadow: "inset 0 0 1px 4px cornFlowerBlue" },
     });
   };
 
-  onSquareClick = square => {
+  onSquareClick = (square) => {
     const piece = this.game.get(this.state.pieceSquare);
-    if(!this.canMove()) return;
+    if (!this.canMove()) return;
 
     const piece2 = this.game.get(this.state.pieceSquare);
-    if(piece2!==null) {
-      if(piece2.color==='b') this.state.deadBlack[piece2.type]+=1;
-      else this.state.deadWhite[piece2.type]+=1;
+    if (piece2 !== null) {
+      if (piece2.color === "b") this.state.deadBlack[piece2.type] += 1;
+      else this.state.deadWhite[piece2.type] += 1;
     }
-
 
     this.setState(({ history }) => ({
       squareStyles: squareStyling({ pieceSquare: square, history }),
-      pieceSquare: square
+      pieceSquare: square,
     }));
 
     let move = this.game.move({
       from: this.state.pieceSquare,
       to: square,
-      promotion: "q"
+      promotion: "q",
     });
 
     const from = this.state.pieceSquare;
@@ -243,24 +244,29 @@ class HumanVsHuman extends Component {
     this.setState({
       fen: this.game.fen(),
       history: this.game.history({ verbose: true }),
-      pieceSquare: ""
+      pieceSquare: "",
     });
-    
-    var rep = null;  
-    if(this.isPromotion(piece,from,square)) rep='q';
+
+    var rep = null;
+    if (this.isPromotion(piece, from, square)) rep = "q";
     const tId = this.state.id;
-    this.state.socket.emit('move', {'id': tId,'from': from, "to": square, 'replace': rep});
+    this.state.socket.emit("move", {
+      id: tId,
+      from: from,
+      to: square,
+      replace: rep,
+    });
   };
 
-  onSquareRightClick = square =>
+  onSquareRightClick = (square) =>
     this.setState({
-      squareStyles: { [square]: { backgroundColor: "darkBlue" } }
+      squareStyles: { [square]: { backgroundColor: "darkBlue" } },
     });
 
-  calcWidth = ({ screenWidth, screenHeight }) =>{ 
-    return screenWidth>screenHeight? screenWidth/2.3:screenHeight/2.3;
-  }
-    
+  calcWidth = ({ screenWidth, screenHeight }) => {
+    return screenWidth > screenHeight ? screenWidth / 2.3 : screenHeight / 2.3;
+  };
+
   render() {
     const { fen, dropSquareStyle, squareStyles } = this.state;
 
@@ -277,20 +283,22 @@ class HumanVsHuman extends Component {
       calcWidth: this.calcWidth,
       deadBlack: this.state.deadBlack,
       deadWhite: this.state.deadWhite,
-      middle_text:this.state.middle_text,
-      isOver: this.state.isOver
+      middle_text: this.state.middle_text,
+      isOver: this.state.isOver,
     });
   }
 }
 
 export default function Game(props) {
   return (
-      <div><HumanVsHuman color={props.color} 
-                    socket={props.socket} 
-                    id={props.id} 
-                    username={props.username}
-                    //onOver={props.onOver}
-                    >
+    <div>
+      <HumanVsHuman
+        color={props.color}
+        socket={props.socket}
+        id={props.id}
+        username={props.username}
+        //onOver={props.onOver}
+      >
         {({
           position,
           onDrop,
@@ -305,81 +313,93 @@ export default function Game(props) {
           deadWhite,
           deadBlack,
           middle_text,
-          isOver
+          isOver,
         }) => (
-          <div className="human-vs-human"><div className="igra"><Chessboard 
-            id="humanVsHuman"
-            calcWidth={calcWidth}
-            position={position}
-            onDrop={onDrop}
-            onMouseOverSquare={onMouseOverSquare}
-            onMouseOutSquare={onMouseOutSquare}
-            boardStyle={{
-              borderRadius: "5px",
-              boxShadow: `0 5px 15px rgba(0, 0, 0, 0.5)`
-            }}
-            squareStyles={squareStyles}
-            dropSquareStyle={dropSquareStyle}
-            onDragOverSquare={onDragOverSquare}
-            onSquareClick={onSquareClick}
-            onSquareRightClick={onSquareRightClick}
-            lightSquareStyle={{ backgroundColor: "#e0e0ff" }}
-            darkSquareStyle={{ backgroundColor: "#353586" }}
-          /></div>
-          <div className="info">
-          <Table striped bordered hover variant="dark">
-              <thead>
-                <tr>
-                  <th>Username</th>
-                  <th>Pawn</th>
-                  <th>Knight</th>
-                  <th>Rook</th>
-                  <th>Bishop</th>
-                  <th>Queen</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>{props.black_player}</td>
-                  <td>{deadBlack["p"]}</td>
-                  <td>{deadBlack["n"]}</td>
-                  <td>{deadBlack["r"]}</td>
-                  <td>{deadBlack["b"]}</td>
-                  <td>{deadBlack["q"]}</td>
-                </tr>
-              </tbody>
-            </Table>
-          {middle_text}<br/>
-          {isOver && <button 
-                    onClick={props.onOver}
-                    type="submit" 
-                    className="btn btn-primary btn-block">Go back</button>}
-          <div className="bottom"><Table striped bordered hover>
-              <thead>
-                <tr>
-                  <th>Username</th>
-                  <th>Pawn</th>
-                  <th>Knight</th>
-                  <th>Rook</th>
-                  <th>Bishop</th>
-                  <th>Queen</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>{props.white_player}</td>
-                  <td>{deadWhite["p"]}</td>
-                  <td>{deadWhite["n"]}</td>
-                  <td>{deadWhite["r"]}</td>
-                  <td>{deadWhite["b"]}</td>
-                  <td>{deadWhite["q"]}</td>
-                </tr>
-              </tbody>
-            </Table></div>
-        </div></div>
+          <div className="human-vs-human">
+            <div className="igra">
+              <Chessboard
+                id="humanVsHuman"
+                calcWidth={calcWidth}
+                position={position}
+                onDrop={onDrop}
+                onMouseOverSquare={onMouseOverSquare}
+                onMouseOutSquare={onMouseOutSquare}
+                boardStyle={{
+                  borderRadius: "5px",
+                  boxShadow: `0 5px 15px rgba(0, 0, 0, 0.5)`,
+                }}
+                squareStyles={squareStyles}
+                dropSquareStyle={dropSquareStyle}
+                onDragOverSquare={onDragOverSquare}
+                onSquareClick={onSquareClick}
+                onSquareRightClick={onSquareRightClick}
+                lightSquareStyle={{ backgroundColor: "#e0e0ff" }}
+                darkSquareStyle={{ backgroundColor: "#353586" }}
+              />
+            </div>
+            <div className="info">
+              <Table striped bordered hover variant="dark">
+                <thead>
+                  <tr>
+                    <th>Username</th>
+                    <th>Pawn</th>
+                    <th>Knight</th>
+                    <th>Rook</th>
+                    <th>Bishop</th>
+                    <th>Queen</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>{props.black_player}</td>
+                    <td>{deadBlack["p"]}</td>
+                    <td>{deadBlack["n"]}</td>
+                    <td>{deadBlack["r"]}</td>
+                    <td>{deadBlack["b"]}</td>
+                    <td>{deadBlack["q"]}</td>
+                  </tr>
+                </tbody>
+              </Table>
+              {middle_text}
+              <br />
+              {isOver && (
+                <button
+                  onClick={props.onOver}
+                  type="submit"
+                  className="btn btn-primary btn-block"
+                >
+                  Go back
+                </button>
+              )}
+              <div className="bottom">
+                <Table striped bordered hover>
+                  <thead>
+                    <tr>
+                      <th>Username</th>
+                      <th>Pawn</th>
+                      <th>Knight</th>
+                      <th>Rook</th>
+                      <th>Bishop</th>
+                      <th>Queen</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>{props.white_player}</td>
+                      <td>{deadWhite["p"]}</td>
+                      <td>{deadWhite["n"]}</td>
+                      <td>{deadWhite["r"]}</td>
+                      <td>{deadWhite["b"]}</td>
+                      <td>{deadWhite["q"]}</td>
+                    </tr>
+                  </tbody>
+                </Table>
+              </div>
+            </div>
+          </div>
         )}
       </HumanVsHuman>
-      </div>
+    </div>
   );
 }
 
@@ -391,13 +411,13 @@ const squareStyling = ({ pieceSquare, history }) => {
     [pieceSquare]: { backgroundColor: "rgba(255, 255, 0, 0.4)" },
     ...(history.length && {
       [sourceSquare]: {
-        backgroundColor: "rgba(255, 255, 0, 0.4)"
-      }
+        backgroundColor: "rgba(255, 255, 0, 0.4)",
+      },
     }),
     ...(history.length && {
       [targetSquare]: {
-        backgroundColor: "rgba(255, 255, 0, 0.4)"
-      }
-    })
+        backgroundColor: "rgba(255, 255, 0, 0.4)",
+      },
+    }),
   };
 };
