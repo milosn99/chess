@@ -3,8 +3,7 @@ import { Table } from "react-bootstrap";
 import { useTable } from "react-table";
 
 export default function Leaderboard(props) {
-  const data = JSON.parse(props.stats);
-  console.log(props.stats);
+  const data = props.stats;
   const columns = React.useMemo(
     () => [
       {

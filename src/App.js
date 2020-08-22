@@ -51,6 +51,10 @@ class App extends React.Component {
     this.state.socket.on("leaderboard", (data) => {
       this.setState({ stats: data });
     });
+
+    this.state.socket.on('empty_username', () => {
+      alert('empty usernam')
+    })
   }
 
   onFriendlySubmit = (event) => {
@@ -75,6 +79,10 @@ class App extends React.Component {
 
   onRandomSubmit = (event) => {
     event.preventDefault();
+    if (!this.state.username) {
+      alert("Unesi username");
+      return;
+    }
     this.state.socket.emit("join_match", {
       username: this.state.username,
       match_type: "random",
