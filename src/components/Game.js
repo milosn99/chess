@@ -371,6 +371,7 @@ export default function Game(props) {
                     onClick={props.onOver}
                     type="submit"
                     className="btn btn-primary btn-block"
+                    style ={{border: "2px solid #e0e0ff", background: "transparent"}}
                   >
                     Go back
                   </button>
