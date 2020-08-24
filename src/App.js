@@ -26,7 +26,6 @@ class App extends React.Component {
 
   componentDidMount() {
     this.state.socket.on("match_created", (data) => {
-      alert(`Mec kreiran na ${data.id}. Cekam protivnika`);
       this.setState({ id: data.id, match_created: true });
     });
 
@@ -53,7 +52,7 @@ class App extends React.Component {
     });
 
     this.state.socket.on('empty_username', () => {
-      alert('empty usernam')
+      alert('Unesi username')
     })
   }
 

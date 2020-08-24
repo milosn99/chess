@@ -6,9 +6,6 @@ export default function Leaderboard(props) {
   const data = props.stats;
   const columns = React.useMemo(
     () => [
-      {
-        Header: "Leaderboard",
-        columns: [
           {
             Header: "Username",
             accessor: "username",
@@ -17,8 +14,6 @@ export default function Leaderboard(props) {
             Header: "Points",
             accessor: "n_points",
           },
-        ],
-      },
     ],
     []
   );
@@ -35,17 +30,13 @@ export default function Leaderboard(props) {
   });
 
   return (
-    <div>
+    <div className="leaderboard">
       <div className="form-group">
-        <button
-          onClick={props.onOver}
-          type="submit"
-          className="btn btn-primary btn-block"
-        >
-          Go back
-        </button>
-      </div>
-      <div className="form-group">
+        <div className="leaderboard-title">
+          
+        <strong className="thead-dark">Leaderboard</strong>
+        </div>
+        <div className="leaderboard-table">
         <Table bordered {...getTableProps()}>
           <thead>
             {headerGroups.map((headerGroup) => (
@@ -72,6 +63,16 @@ export default function Leaderboard(props) {
             })}
           </tbody>
         </Table>
+        </div>
+      </div>
+      <div className="form-group">
+        <button
+          onClick={props.onOver}
+          type="submit"
+          className="btn btn-primary btn-block"
+        >
+          Go back
+        </button>
       </div>
     </div>
   );

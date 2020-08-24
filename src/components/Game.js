@@ -338,30 +338,35 @@ export default function Game(props) {
               />
             </div>
             <div className="info">
-              <Table striped bordered hover variant="dark">
-                <thead>
-                  <tr>
-                    <th>Username</th>
-                    <th>Pawn</th>
-                    <th>Knight</th>
-                    <th>Rook</th>
-                    <th>Bishop</th>
-                    <th>Queen</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>{props.black_player}</td>
-                    <td>{deadBlack["p"]}</td>
-                    <td>{deadBlack["n"]}</td>
-                    <td>{deadBlack["r"]}</td>
-                    <td>{deadBlack["b"]}</td>
-                    <td>{deadBlack["q"]}</td>
-                  </tr>
-                </tbody>
-              </Table>
+              <div className="black-player-dead">
+                <div className="cemetary">
+                  <div className="grave">
+                    <img src="pawn-black.png" alt="Pawn" />
+                    <div>{deadBlack.p}</div>
+                  </div>
+                  <div className="grave">
+                    <img src="knight-black.png" alt="Pawn" />
+                    <div>{deadBlack.n}</div>
+                  </div>
+                  <div className="grave">
+                    <img src="rook-black.png" alt="Pawn" />
+                    <div>{deadBlack.r}</div>
+                  </div>
+                  <div className="grave">
+                    <img src="bishop-black.png" alt="Pawn" />
+                    <div>{deadBlack.b}</div>
+                  </div>
+                  <div className="grave">
+                    <img src="queen-black.png" alt="Pawn" />
+                    <div>{deadBlack.q}</div>
+                  </div>
+                </div>
+                <div className="black-player-username">
+                  {props.black_player}
+                </div>
+              </div>
+              <div>
               {middle_text}
-              <br />
               {isOver && (
                 <button
                   onClick={props.onOver}
@@ -370,30 +375,36 @@ export default function Game(props) {
                 >
                   Go back
                 </button>
+
               )}
-              <div className="bottom">
-                <Table striped bordered hover>
-                  <thead>
-                    <tr>
-                      <th>Username</th>
-                      <th>Pawn</th>
-                      <th>Knight</th>
-                      <th>Rook</th>
-                      <th>Bishop</th>
-                      <th>Queen</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>{props.white_player}</td>
-                      <td>{deadWhite["p"]}</td>
-                      <td>{deadWhite["n"]}</td>
-                      <td>{deadWhite["r"]}</td>
-                      <td>{deadWhite["b"]}</td>
-                      <td>{deadWhite["q"]}</td>
-                    </tr>
-                  </tbody>
-                </Table>
+              </div>
+              
+              <div className="white-player-dead">
+              <div className="black-player-username">
+                  {props.white_player}
+                </div>
+                <div className="cemetary">
+                  <div className="grave">
+                    <img src="pawn-white.png" alt="Pawn" />
+                    <div>{deadWhite.p}</div>
+                  </div>
+                  <div className="grave">
+                    <img src="knight-white.png" alt="Pawn" />
+                    <div>{deadWhite.n}</div>
+                  </div>
+                  <div className="grave">
+                    <img src="rook-white.png" alt="Pawn" />
+                    <div>{deadWhite.r}</div>
+                  </div>
+                  <div className="grave">
+                    <img src="bishop-white.png" alt="Pawn" />
+                    <div>{deadWhite.b}</div>
+                  </div>
+                  <div className="grave">
+                    <img src="queen-white.png" alt="Pawn" />
+                    <div>{deadWhite.q}</div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
