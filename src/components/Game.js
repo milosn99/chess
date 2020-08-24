@@ -366,21 +366,20 @@ export default function Game(props) {
                 </div>
               </div>
               <div>
-              {middle_text}
-              {isOver && (
-                <button
-                  onClick={props.onOver}
-                  type="submit"
-                  className="btn btn-primary btn-block"
-                >
-                  Go back
-                </button>
-
-              )}
+                {middle_text}
+                {isOver && (
+                  <button
+                    onClick={props.onOver}
+                    type="submit"
+                    className="btn btn-primary btn-block"
+                  >
+                    Go back
+                  </button>
+                )}
               </div>
-              
+
               <div className="white-player-dead">
-              <div className="black-player-username">
+                <div className="black-player-username">
                   {props.white_player}
                 </div>
                 <div className="cemetary">
