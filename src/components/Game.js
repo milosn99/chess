@@ -325,8 +325,7 @@ export default function Game(props) {
                 onMouseOverSquare={onMouseOverSquare}
                 onMouseOutSquare={onMouseOutSquare}
                 boardStyle={{
-                  borderRadius: "5px",
-                  boxShadow: `0 5px 15px rgba(0, 0, 0, 0.5)`,
+                  borderRadius: "5px"
                 }}
                 squareStyles={squareStyles}
                 dropSquareStyle={dropSquareStyle}
@@ -334,7 +333,7 @@ export default function Game(props) {
                 onSquareClick={onSquareClick}
                 onSquareRightClick={onSquareRightClick}
                 lightSquareStyle={{ backgroundColor: "#e0e0ff" }}
-                darkSquareStyle={{ backgroundColor: "#353586" }}
+                darkSquareStyle={{ backgroundColor: "rgba(53, 53, 134, 0.3)" }}
               />
             </div>
             <div className="info">

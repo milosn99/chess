@@ -1,7 +1,9 @@
 @import url('https://fonts.googleapis.com/css?family=Fira+Sans:400,500,600,700,800');
 
 :root {
-  --dark-purple: #000046;
+  --dark-purple: #353586;
+  --dark-purple--lighter: #7d7dbb;
+  --background: #0000469c;
 }
 
 * {
@@ -39,10 +41,14 @@ body, html, .App, #root, .auth-wrapper {
   justify-content: center;
   flex-direction: column;
   text-align: left;
-  position: relative;
 }
 
-.auth-wrapper::after {
+.login {
+  position: relative;
+
+}
+
+.login::after {
   content: '';
   position: absolute;
   top: 0;
@@ -56,14 +62,16 @@ body, html, .App, #root, .auth-wrapper {
 }
 
 
+
 .auth-inner {
   position: relative;
   z-index: 1;
   margin: auto;
-  box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.4);
+  box-shadow: 0px 14px 80px rgba(189, 190, 202, 0.4);
   border-radius: 15px;
   transition: all .3s;
 }
+
 .auth-inner .leaderboard-table {
   max-height: 500px;
   overflow-y: auto;
@@ -80,7 +88,7 @@ body, html, .App, #root, .auth-wrapper {
 }
 
 .human-vs-human .info{
-  margin:0;
+  position: relative;
   color: white;
   display: flex;
   flex-direction: column;
@@ -97,13 +105,12 @@ body, html, .App, #root, .auth-wrapper {
 }
 
 .game-inner{
-  padding: 7px 7px 7px 7px;
-  background-color:rgba(256, 256, 256, 0.5);
-
+  padding: 16px;
+  background-color:var(--background);
 }
 
 .auth-wrapper .form-control:focus {
-  border-color: #167bff;
+  border-color: #8e6db4;
   box-shadow: none;
 }
 
@@ -119,7 +126,8 @@ body, html, .App, #root, .auth-wrapper {
 }
 
 .game{
-  background-color: var(--dark-purple);
+  position: relative;
+  background-color: white;
   display: flex;
 }
 
