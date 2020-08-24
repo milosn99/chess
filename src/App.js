@@ -105,6 +105,7 @@ class App extends React.Component {
       match_created: false,
       color: "",
       stats: "",
+      id: new URLSearchParams(window.location.search).get("id"),
     });
   };
 
