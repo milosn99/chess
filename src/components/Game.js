@@ -219,12 +219,11 @@ class HumanVsHuman extends Component {
   onSquareClick = (square) => {
     const piece = this.game.get(this.state.pieceSquare);
     if (!this.canMove()) return;
-
-    const piece2 = this.game.get(this.state.pieceSquare);
-    if (piece2 !== null) {
-      if (piece2.color === "b") this.state.deadBlack[piece2.type] += 1;
-      else this.state.deadWhite[piece2.type] += 1;
-    }
+    
+    // if (piece !== null) {
+    //   if (piece.color === "b") this.state.deadBlack[piece.type] += 1;
+      // else this.state.deadWhite[piece.type] += 1;
+    // }
 
     this.setState(({ history }) => ({
       squareStyles: squareStyling({ pieceSquare: square, history }),
