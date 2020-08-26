@@ -158,6 +158,8 @@ class HumanVsHuman extends Component {
     const piece = this.game.get(sourceSquare);
     if (!this.canMove()) return;
 
+    if (sourceSquare == targetSquare) return;
+
     const piece2 = this.game.get(targetSquare);
     if (piece2 !== null) {
       if (piece2.color === "b") this.state.deadBlack[piece2.type] += 1;
@@ -216,46 +218,47 @@ class HumanVsHuman extends Component {
     });
   };
 
-  onSquareClick = (square) => {
-    const piece = this.game.get(this.state.pieceSquare);
-    if (!this.canMove()) return;
-    
-    // if (piece !== null) {
-    //   if (piece.color === "b") this.state.deadBlack[piece.type] += 1;
-      // else this.state.deadWhite[piece.type] += 1;
-    // }
+  // onSquareClick = (square) => {
+  //   const piece = this.game.get(this.state.pieceSquare);
+  //   if (!this.canMove()) return;
 
-    this.setState(({ history }) => ({
-      squareStyles: squareStyling({ pieceSquare: square, history }),
-      pieceSquare: square,
-    }));
+  //   const piece2 = this.game.get(this.state.pieceSquare);
+  //   if (piece2 !== null) {
+  //     if (piece2.color === "b") this.state.deadBlack[piece2.type] += 1;
+  //     else this.state.deadWhite[piece2.type] += 1;
+  //   }
 
-    let move = this.game.move({
-      from: this.state.pieceSquare,
-      to: square,
-      promotion: "q",
-    });
+  //   this.setState(({ history }) => ({
+  //     squareStyles: squareStyling({ pieceSquare: square, history }),
+  //     pieceSquare: square,
+  //   }));
 
-    const from = this.state.pieceSquare;
-    // nedozvoljen potez
-    if (move === null) return;
+  //   let move = this.game.move({
+  //     from: this.state.pieceSquare,
+  //     to: square,
+  //     promotion: "q",
+  //   });
 
-    this.setState({
-      fen: this.game.fen(),
-      history: this.game.history({ verbose: true }),
-      pieceSquare: "",
-    });
+  //   const from = this.state.pieceSquare;
+  //   // nedozvoljen potez
+  //   if (move === null) return;
 
-    var rep = null;
-    if (this.isPromotion(piece, from, square)) rep = "q";
-    const tId = this.state.id;
-    this.state.socket.emit("move", {
-      id: tId,
-      from: from,
-      to: square,
-      replace: rep,
-    });
-  };
+  //   this.setState({
+  //     fen: this.game.fen(),
+  //     history: this.game.history({ verbose: true }),
+  //     pieceSquare: "",
+  //   });
+
+  //   var rep = null;
+  //   if (this.isPromotion(piece, from, square)) rep = "q";
+  //   const tId = this.state.id;
+  //   this.state.socket.emit("move", {
+  //     id: tId,
+  //     from: from,
+  //     to: square,
+  //     replace: rep,
+  //   });
+  // };
 
   onSquareRightClick = (square) =>
     this.setState({
@@ -324,8 +327,7 @@ export default function Game(props) {
                 onMouseOverSquare={onMouseOverSquare}
                 onMouseOutSquare={onMouseOutSquare}
                 boardStyle={{
-                  borderRadius: "5px",
-                  boxShadow: `0 5px 15px rgba(0, 0, 0, 0.5)`,
+                  borderRadius: "5px"
                 }}
                 squareStyles={squareStyles}
                 dropSquareStyle={dropSquareStyle}
@@ -333,7 +335,7 @@ export default function Game(props) {
                 onSquareClick={onSquareClick}
                 onSquareRightClick={onSquareRightClick}
                 lightSquareStyle={{ backgroundColor: "#e0e0ff" }}
-                darkSquareStyle={{ backgroundColor: "#353586" }}
+                darkSquareStyle={{ backgroundColor: "rgba(53, 53, 134, 0.3)" }}
               />
             </div>
             <div className="info">
@@ -371,6 +373,7 @@ export default function Game(props) {
                     onClick={props.onOver}
                     type="submit"
                     className="btn btn-primary btn-block"
+                    style ={{border: "2px solid #e0e0ff", background: "transparent"}}
                   >
                     Go back
                   </button>
@@ -400,7 +403,7 @@ export default function Game(props) {
                   </div>
                   <div className="grave">
                     <img src="queen-white.png" alt="Pawn" />
-                    <div>{deadWhite.q}</div>
+                    <div>0</div>
                   </div>
                 </div>
               </div>
