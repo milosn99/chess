@@ -130,7 +130,7 @@ class App extends React.Component {
               />
             )}
             {!isLoggedIn && this.state.match_created && !this.state.stats && (
-              <div>Mec kreiran na ${this.state.id}. Cekam protivnika</div>
+              <div>Mec kreiran na localhost:3000/?id={this.state.id}. Cekam protivnika</div>
             )}
             {isLoggedIn && !this.state.stats && (
               <Game
