@@ -158,6 +158,8 @@ class HumanVsHuman extends Component {
     const piece = this.game.get(sourceSquare);
     if (!this.canMove()) return;
 
+    if (sourceSquare == targetSquare) return;
+
     const piece2 = this.game.get(targetSquare);
     if (piece2 !== null) {
       if (piece2.color === "b") this.state.deadBlack[piece2.type] += 1;
@@ -216,47 +218,47 @@ class HumanVsHuman extends Component {
     });
   };
 
-  onSquareClick = (square) => {
-    const piece = this.game.get(this.state.pieceSquare);
-    if (!this.canMove()) return;
+  // onSquareClick = (square) => {
+  //   const piece = this.game.get(this.state.pieceSquare);
+  //   if (!this.canMove()) return;
 
-    const piece2 = this.game.get(this.state.pieceSquare);
-    if (piece2 !== null) {
-      if (piece2.color === "b") this.state.deadBlack[piece2.type] += 1;
-      else this.state.deadWhite[piece2.type] += 1;
-    }
+  //   const piece2 = this.game.get(this.state.pieceSquare);
+  //   if (piece2 !== null) {
+  //     if (piece2.color === "b") this.state.deadBlack[piece2.type] += 1;
+  //     else this.state.deadWhite[piece2.type] += 1;
+  //   }
 
-    this.setState(({ history }) => ({
-      squareStyles: squareStyling({ pieceSquare: square, history }),
-      pieceSquare: square,
-    }));
+  //   this.setState(({ history }) => ({
+  //     squareStyles: squareStyling({ pieceSquare: square, history }),
+  //     pieceSquare: square,
+  //   }));
 
-    let move = this.game.move({
-      from: this.state.pieceSquare,
-      to: square,
-      promotion: "q",
-    });
+  //   let move = this.game.move({
+  //     from: this.state.pieceSquare,
+  //     to: square,
+  //     promotion: "q",
+  //   });
 
-    const from = this.state.pieceSquare;
-    // nedozvoljen potez
-    if (move === null) return;
+  //   const from = this.state.pieceSquare;
+  //   // nedozvoljen potez
+  //   if (move === null) return;
 
-    this.setState({
-      fen: this.game.fen(),
-      history: this.game.history({ verbose: true }),
-      pieceSquare: "",
-    });
+  //   this.setState({
+  //     fen: this.game.fen(),
+  //     history: this.game.history({ verbose: true }),
+  //     pieceSquare: "",
+  //   });
 
-    var rep = null;
-    if (this.isPromotion(piece, from, square)) rep = "q";
-    const tId = this.state.id;
-    this.state.socket.emit("move", {
-      id: tId,
-      from: from,
-      to: square,
-      replace: rep,
-    });
-  };
+  //   var rep = null;
+  //   if (this.isPromotion(piece, from, square)) rep = "q";
+  //   const tId = this.state.id;
+  //   this.state.socket.emit("move", {
+  //     id: tId,
+  //     from: from,
+  //     to: square,
+  //     replace: rep,
+  //   });
+  // };
 
   onSquareRightClick = (square) =>
     this.setState({
@@ -401,7 +403,7 @@ export default function Game(props) {
                   </div>
                   <div className="grave">
                     <img src="queen-white.png" alt="Pawn" />
-                    <div>{deadWhite.q}</div>
+                    <div>0</div>
                   </div>
                 </div>
               </div>
